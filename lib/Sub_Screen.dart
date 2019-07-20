@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
-class SubCategories extends StatefulWidget {
-  static const String id = 'SubCategories';
-  SubCategories({Key key, this.title}) : super(key: key);
-  final String title;
+import 'MainScreen.dart';
+var duplicateItems = List<String>();
+class Sub extends StatefulWidget {
+  static const String id = 'Sub_Screen';
+  var itemm = List<String>();
+
+  String title;
   @override
-  _SubCategoriesState createState() => _SubCategoriesState();
+  _SubState createState() => _SubState();
 }
 
-class _SubCategoriesState extends State<SubCategories> {
+class _SubState extends State<Sub> {
   TextEditingController editingController = TextEditingController();
-
-  final duplicateItems = List<String>.generate(10000, (i) => "Item $i");
   var items = List<String>();
+@override
+  void initState() {
+    items.addAll(MainScrenn.subcat);
+    print(MainScrenn.subcat);
+    super.initState();
 
+  }
   void filterSearchResults(String query) {
     List<String> dummySearchList = List<String>();
-    dummySearchList.addAll(duplicateItems);
+    dummySearchList.addAll(MainScrenn.subcat);
     if(query.isNotEmpty) {
       List<String> dummyListData = List<String>();
       dummySearchList.forEach((item) {
@@ -31,7 +38,7 @@ class _SubCategoriesState extends State<SubCategories> {
     } else {
       setState(() {
         items.clear();
-        items.addAll(duplicateItems);
+        items.addAll(MainScrenn.subcat);
       });
     }
 
@@ -40,7 +47,7 @@ class _SubCategoriesState extends State<SubCategories> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: new Text('FindIt'),
       ),
       body: Container(
         child: Column(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Subcategories.dart';
 import 'MainScreen.dart';
+import 'Sub_Screen.dart';
 void main() => runApp(Find_it());
 class Find_it extends StatefulWidget {
 
@@ -14,6 +16,9 @@ class _Find_itState extends State<Find_it> {
       initialRoute: MainScrenn.id,
       routes: {
         MainScrenn.id : (context) => MainScrenn(),
+        SubCategories.id : (context) => SubCategories(),
+        Sub.id : (context) => Sub()
+
       },
     );
   }
