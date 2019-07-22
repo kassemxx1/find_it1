@@ -31,13 +31,19 @@ class _MainScrennState extends State<MainScrenn> {
 
   var height = 300;
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
-          getcatgorie('70385816');
           print(MainScrenn.subcat);
+          Sub.catt='hotel';
           Navigator.pushNamed(context, Sub.id);
 
         }),
@@ -100,6 +106,9 @@ class _MainScrennState extends State<MainScrenn> {
 
 class StreamData extends StatelessWidget {
   var ListOfCategoires = [];
+  void getSub(){
+
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -127,8 +136,9 @@ class StreamData extends StatelessWidget {
                 child: cards(ListOfCategoires[index]['subcategories'],
                     ListOfCategoires[index]['imagelink']),
                 onPressed: () {
-                getcatgorie(ListOfCategoires[index]['subcategories']);
-                  Navigator.pushNamed(context, Sub.id);
+                  Sub.catt = ListOfCategoires[index]['subcategories'];
+
+
                 },
               );
             });
@@ -151,26 +161,6 @@ class cards extends StatelessWidget {
         ),
         Text(categorie),
       ],
-    );
-  }
-}
-class getcatgorie extends StatelessWidget {
-  final String cat;
-  getcatgorie(this.cat);
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _firestore.collection('subcategories').where('phone',isEqualTo: cat).snapshots(),
-      builder: (context, snapshot) {
-        MainScrenn.subcat.clear();
-
-        for (var doc in snapshot.data.documents) {
-          final subcat = doc['title'].toString();
-//          final imagelink = doc['image'].toString();
-          print(subcat);
-          MainScrenn.subcat.add(subcat);
-        }
-      },
     );
   }
 }
