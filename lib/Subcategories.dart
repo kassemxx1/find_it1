@@ -37,10 +37,16 @@ class _SubCategoriesState extends State<SubCategories> {
 
   }
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: new Text('widget.title'),
       ),
       body: Container(
         child: Column(

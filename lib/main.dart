@@ -17,7 +17,7 @@ class _Find_itState extends State<Find_it> {
       routes: {
         MainScrenn.id : (context) => MainScrenn(),
         SubCategories.id : (context) => SubCategories(),
-        Sub.id : (context) => Sub()
+        categorie.id : (context) => categorie(),
 
       },
     );

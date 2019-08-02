@@ -5,17 +5,38 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'Subcategories.dart';
 import 'Sub_Screen.dart';
 
-
 final _firestore = Firestore.instance;
+AnimationController animationController;
+var heightt = 400.0;
 
 class MainScrenn extends StatefulWidget {
   static const String id = 'Main_Screen';
-  static final subcat=List<String>();
+  static var cat = "";
   @override
   _MainScrennState createState() => _MainScrennState();
 }
 
-class _MainScrennState extends State<MainScrenn> {
+class _MainScrennState extends State<MainScrenn>
+    with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: StreamData(),
+      ),
+    );
+  }
+}
+
+class StreamData extends StatelessWidget {
+
+
   List colrs = [
     Colors.cyan,
     Colors.green,
@@ -28,27 +49,26 @@ class _MainScrennState extends State<MainScrenn> {
     Colors.yellow,
     Colors.grey
   ];
-
-  var height = 300;
-
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-  }
+  var ListOfCategoires = [];
+  void getSub() {}
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          print(MainScrenn.subcat);
-          Sub.catt='hotel';
-          Navigator.pushNamed(context, Sub.id);
-
-        }),
-        body: CustomScrollView(
-          slivers: <Widget>[
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('categories').snapshots(),
+        builder: (context, snapshot) {
+          ListOfCategoires.clear();
+          if (snapshot.hasData) {
+            final messages = snapshot.data.documents;
+            for (var doc in messages) {
+              final subcat = doc['subcategories'].toString();
+              final imagelink = doc['image'].toString();
+              ListOfCategoires.add({
+                'subcategories': subcat,
+                'imagelink': imagelink,
+              });
+            }
+          }
+          return CustomScrollView(slivers: <Widget>[
             SliverAppBar(
               expandedHeight: 300,
               floating: false,
@@ -91,76 +111,101 @@ class _MainScrennState extends State<MainScrenn> {
               ),
               itemExtent: 60,
             ),
-            SliverFixedExtentList(
-              delegate: SliverChildListDelegate(
-                [StreamData()],
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                ///no.of items in the horizontal axis
+                crossAxisCount: 2,
               ),
-              itemExtent: 500,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return MaterialButton(
+                    onPressed: (){
+                      MainScrenn.cat=ListOfCategoires[index]['subcategories'];
+                      print(MainScrenn.cat);
+                      Navigator.push(context, new MaterialPageRoute(
+                          builder: (context) =>
+                          new categorie())
+                      );
+//                      Navigator.pushNamed(context, categorie.id);
+                    },
+                    child: AnimatedContainer(
 
-class StreamData extends StatelessWidget {
-  var ListOfCategoires = [];
-  void getSub(){
-
-  }
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _firestore.collection('categories').snapshots(),
-      builder: (context, snapshot) {
-        ListOfCategoires.clear();
-
-        for (var doc in snapshot.data.documents) {
-          final subcat = doc['subcategories'].toString();
-          final imagelink = doc['image'].toString();
-          ListOfCategoires.add({
-            'subcategories': subcat,
-            'imagelink': imagelink,
-          });
-        }
-        return GridView.builder(
-            itemCount: ListOfCategoires.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: MediaQuery.of(context).size.width /
-                  (MediaQuery.of(context).size.height / 1.4),
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              return MaterialButton(
-                child: cards(ListOfCategoires[index]['subcategories'],
-                    ListOfCategoires[index]['imagelink']),
-                onPressed: () {
-                  Sub.catt = ListOfCategoires[index]['subcategories'];
+                      duration: Duration(seconds: 1),
+                      curve: Curves.linear,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: ListOfCategoires[index]['imagelink'],
+                            fit: BoxFit.fill,
+                          ),
+                          Text(
+                            ListOfCategoires[index]['subcategories'],
+                          ),
+                        ],
+                      )
 
 
+                    ),
+                  );
                 },
-              );
-            });
-      },
-    );
+                childCount: ListOfCategoires.length,
+
+                /// Set childCount to limit no.of items
+                /// childCount: 100,
+              ),
+            )
+          ]);
+        });
   }
 }
 
-class cards extends StatelessWidget {
-  cards(this.categorie, this.imageLink);
-  final String categorie;
-  final String imageLink;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        CachedNetworkImage(
-          imageUrl: imageLink,
-          fit: BoxFit.fill,
-        ),
-        Text(categorie),
-      ],
-    );
-  }
-}
+
+//class cards extends StatefulWidget {
+//  cards(this.categoriee, this.imageLink);
+//  final String categoriee;
+//  final String imageLink;
+//
+//  @override
+//  _cardsState createState() => _cardsState();
+//}
+//
+//class _cardsState extends State<cards> {
+//  @override
+//  Widget build(BuildContext context) {
+//    return MaterialButton(
+//      child: Column(
+//        children: <Widget>[
+//          CachedNetworkImage(
+//            imageUrl: widget.imageLink,
+//            fit: BoxFit.fill,
+//          ),
+//          Text(widget.categoriee,),
+//        ],
+//      ),
+//      onPressed: (){
+//        MainScrenn.cat=categoriee;
+//        Navigator.pushNamed(context, categorie.id);
+//      },
+//
+//    );
+//  }
+//}
+
+//GridView.builder(
+//
+//
+//itemCount: ListOfCategoires.length,
+//gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//crossAxisCount: 3,
+//childAspectRatio: MediaQuery.of(context).size.width /
+//(MediaQuery.of(context).size.height / 1.4),
+//),
+//itemBuilder: (BuildContext context, int index) {
+//
+//
+//return Container(
+//child: cards(ListOfCategoires[index]['subcategories'],
+//ListOfCategoires[index]['imagelink']),
+//);
+//});
