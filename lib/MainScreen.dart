@@ -4,12 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'Subcategories.dart';
 import 'Sub_Screen.dart';
+import 'package:geolocator/geolocator.dart';
 
 final _firestore = Firestore.instance;
 AnimationController animationController;
 var heightt = 400.0;
-
+var geolocator = Geolocator();
 class MainScrenn extends StatefulWidget {
+ var geolocator = Geolocator();
+   static var MyLatitud=33.0;
+   static var MyLonGitude=33.0;
   static const String id = 'Main_Screen';
   static var cat = "";
   @override
@@ -18,12 +22,17 @@ class MainScrenn extends StatefulWidget {
 
 class _MainScrennState extends State<MainScrenn>
     with SingleTickerProviderStateMixin {
+  void getCurrentPosition()async{
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    MainScrenn.MyLatitud=position.latitude;
+    MainScrenn.MyLonGitude=position.longitude;
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+ //   getCurrentPosition();
   }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,10 +42,7 @@ class _MainScrennState extends State<MainScrenn>
     );
   }
 }
-
 class StreamData extends StatelessWidget {
-
-
   List colrs = [
     Colors.cyan,
     Colors.green,
@@ -70,7 +76,7 @@ class StreamData extends StatelessWidget {
           }
           return CustomScrollView(slivers: <Widget>[
             SliverAppBar(
-              expandedHeight: 300,
+              expandedHeight: MediaQuery.of(context).size.height/3,
               floating: false,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
