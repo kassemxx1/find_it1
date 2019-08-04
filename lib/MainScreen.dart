@@ -9,11 +9,13 @@ import 'package:geolocator/geolocator.dart';
 final _firestore = Firestore.instance;
 AnimationController animationController;
 var heightt = 400.0;
-var geolocator = Geolocator();
+Geolocator _geolocator=Geolocator();
+Position _position;
 class MainScrenn extends StatefulWidget {
- var geolocator = Geolocator();
-   static var MyLatitud=33.0;
-   static var MyLonGitude=33.0;
+
+
+   static var MyLatitud=33.322497;
+   static var MyLonGitude=35.477090;
   static const String id = 'Main_Screen';
   static var cat = "";
   @override
@@ -22,16 +24,21 @@ class MainScrenn extends StatefulWidget {
 
 class _MainScrennState extends State<MainScrenn>
     with SingleTickerProviderStateMixin {
+
   void getCurrentPosition()async{
     Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     MainScrenn.MyLatitud=position.latitude;
     MainScrenn.MyLonGitude=position.longitude;
+    print(MainScrenn.MyLatitud);
   }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
- //   getCurrentPosition();
+
+    getCurrentPosition();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -57,6 +64,11 @@ class StreamData extends StatelessWidget {
   ];
   var ListOfCategoires = [];
   void getSub() {}
+  void getCurrentPosition()async{
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    MainScrenn.MyLatitud=position.latitude;
+    MainScrenn.MyLonGitude=position.longitude;
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -126,6 +138,7 @@ class StreamData extends StatelessWidget {
                 (BuildContext context, int index) {
                   return MaterialButton(
                     onPressed: (){
+                      getCurrentPosition();
                       MainScrenn.cat=ListOfCategoires[index]['subcategories'];
                       print(MainScrenn.cat);
                       Navigator.push(context, new MaterialPageRoute(
