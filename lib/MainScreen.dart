@@ -13,7 +13,7 @@ Geolocator _geolocator=Geolocator();
 Position _position;
 class MainScrenn extends StatefulWidget {
 
-
+  static var MyPoint=GeoPoint(33.322497, 35.477090);
    static var MyLatitud=33.322497;
    static var MyLonGitude=35.477090;
   static const String id = 'Main_Screen';
@@ -30,6 +30,7 @@ class _MainScrennState extends State<MainScrenn>
 
     MainScrenn.MyLatitud=position.latitude;
     MainScrenn.MyLonGitude=position.longitude;
+    MainScrenn.MyPoint =GeoPoint(position.latitude, position.longitude);
     print(MainScrenn.MyLatitud);
   }
   @override
