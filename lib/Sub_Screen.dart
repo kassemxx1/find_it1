@@ -34,26 +34,31 @@ class GetData extends StatefulWidget {
 }
 
 class _GetDataState extends State<GetData> {
+  @override
+List headers=[];
   var geolocator = Geolocator();
   var distance = '';
   var duration = '';
   Dio dio = new Dio();
+
   Response response;
   String API_KEY_android = 'AIzaSyCcgNqHPXujEYpRy1BntzZ1wzp4eblTW-Y';
-  String API_KEY_IOS = 'AIzaSyCETClMi4OZeBmRZ7uJMRLhBUAYZKNxOvs';
+  String API_KEY_IOS = 'AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE';
 
-  Future getresponse(String x1, String y1, String x2, String y2) async {
+  Future<Widget> getresponse(int i) async {
     String url =
-        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${x1.toString()},${y1.toString()}&destinations=${x2.toString()},${y2.toString()}&key=$API_KEY_IOS';
+        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${DetailsList[i]['latitude']},${DetailsList[i]['longitude']}&key=$API_KEY_IOS';
 
     response = await dio.get(url);
-    setState(() {
-      distance = response.data['rows'][0]['elements'][0]['distance']['text'];
-      duration = response.data['rows'][0]['elements'][0]['duration']['text'];
-    });
+    print(url);
+    print(response);
+  distance = response.data['rows'][0]['elements'][0]['distance']['text'];
+  duration = response.data['rows'][0]['elements'][0]['duration']['text'];
 
-    print(duration);
+return await Text(distance);
+
   }
+
 
   List DetailsList = [{}];
 
@@ -86,21 +91,31 @@ class _GetDataState extends State<GetData> {
             delivery == true
                 ? deliverycolor = Colors.green
                 : deliverycolor = Colors.red;
-            print(getresponse('33.3224968977418', '35.47709048134694',
-                '33.22932992335729', '35.52890069414021'));
+
+
+
 
             DetailsList.add({
               'title': title,
               'phone': phone,
               'image': image,
               'delivery': deliveryy,
-              'distance': distance,
               'deliverycolor': deliverycolor,
+              'latitude':al,
+              'longitude':lon,
+
             });
+            headers.add(title);
+
+
           }
           DetailsList.sort((a, b) {
             return a['title'].compareTo(b['title']);
           });
+
+
+
+
         }
         return CustomScrollView(
           slivers: <Widget>[
@@ -108,11 +123,29 @@ class _GetDataState extends State<GetData> {
               expandedHeight: 50,
               pinned: true,
               actions: <Widget>[
-                ButtonBar(
-                  children: <Widget>[
-                    IconButton(icon: Icon(Icons.filter_list), onPressed: () {})
-                  ],
-                )
+                IconButton(
+                  icon:
+                    IconButton(icon: Icon(Icons.time_to_leave), onPressed: () {
+                      setState(() {
+                        DetailsList.sort((a, b) {
+                          return a['distance'].compareTo(b['distance']);
+                        });
+                      });
+                    })
+
+                ),
+                IconButton(
+                    icon:
+                    IconButton(icon: Icon(Icons.sort_by_alpha), onPressed: () {
+                      setState(() {
+                        DetailsList.sort((a, b) {
+                          return a['title'].compareTo(b['title']);
+                        });
+                      });
+                    })
+
+                ),
+
               ],
             ),
             SliverList(
@@ -189,13 +222,16 @@ class _GetDataState extends State<GetData> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: 50,
+                                            width: 10,
                                           ),
                                           Align(
                                             child: Column(
                                               children: <Widget>[
-                                                Text('Distance: $distance'),
-                                                Text('Duration: $duration'),
+
+//                                                Text('DUration: ${DetailsList[index]['duration']}'),
+
+
+
                                               ],
                                             ),
                                             alignment: Alignment.bottomRight,
@@ -225,3 +261,4 @@ class _GetDataState extends State<GetData> {
     );
   }
 }
+

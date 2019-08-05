@@ -31,7 +31,7 @@ class _MainScrennState extends State<MainScrenn>
     MainScrenn.MyLatitud=position.latitude;
     MainScrenn.MyLonGitude=position.longitude;
     MainScrenn.MyPoint =GeoPoint(position.latitude, position.longitude);
-    print(MainScrenn.MyLatitud);
+
   }
   @override
   void initState() {
