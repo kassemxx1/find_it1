@@ -35,32 +35,33 @@ class GetData extends StatefulWidget {
 
 class _GetDataState extends State<GetData> {
   @override
-List headers=[];
+  List headers = [];
   var geolocator = Geolocator();
-  var distance = '';
-  var duration = '';
+  var distance = 'null';
+  var duration = 'null';
   Dio dio = new Dio();
 
   Response response;
   String API_KEY_android = 'AIzaSyCcgNqHPXujEYpRy1BntzZ1wzp4eblTW-Y';
   String API_KEY_IOS = 'AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE';
 
-  Future<Widget> getresponse(int i) async {
+  Future<String> getresponse(int i) async {
     String url =
-        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${DetailsList[i]['latitude']},${DetailsList[i]['longitude']}&key=$API_KEY_IOS';
-
+        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=33.246541,35.516070&destinations=${DetailsList[i]['latitude']},${DetailsList[i]['longitude']}&key=$API_KEY_IOS';
     response = await dio.get(url);
     print(url);
-    print(response);
-  distance = response.data['rows'][0]['elements'][0]['distance']['text'];
-  duration = response.data['rows'][0]['elements'][0]['duration']['text'];
 
-return await Text(distance);
+    distance = response.data['rows'][0]['elements'][0]['distance']['text'];
+    duration = response.data['rows'][0]['elements'][0]['duration']['text'];
+    DetailsList.insert(i, {
+      'distance': distance,
+    });
 
+    return await new Future(
+        () => '${distance.toString()}    ${duration.toString()}');
   }
 
-
-  List DetailsList = [{}];
+static  List DetailsList = [{}];
 
   @override
   Widget build(BuildContext context) {
@@ -81,41 +82,27 @@ return await Text(distance);
             final point = msg.data['location'] as GeoPoint;
             final al = point.latitude;
             final lon = point.longitude;
-            final X = msg.data['X'];
-            final Y = msg.data['Y'];
             var deliveryy = 'yes';
             var deliverycolor = Colors.grey;
             print(MainScrenn.MyLatitud);
-            final dddd = '99999999';
             delivery == true ? deliveryy = 'yes' : deliveryy = 'No';
             delivery == true
                 ? deliverycolor = Colors.green
                 : deliverycolor = Colors.red;
-
-
-
-
             DetailsList.add({
               'title': title,
               'phone': phone,
               'image': image,
               'delivery': deliveryy,
               'deliverycolor': deliverycolor,
-              'latitude':al,
-              'longitude':lon,
-
+              'latitude': al,
+              'longitude': lon,
             });
             headers.add(title);
-
-
           }
           DetailsList.sort((a, b) {
             return a['title'].compareTo(b['title']);
           });
-
-
-
-
         }
         return CustomScrollView(
           slivers: <Widget>[
@@ -124,28 +111,25 @@ return await Text(distance);
               pinned: true,
               actions: <Widget>[
                 IconButton(
-                  icon:
-                    IconButton(icon: Icon(Icons.time_to_leave), onPressed: () {
-                      setState(() {
-                        DetailsList.sort((a, b) {
-                          return a['distance'].compareTo(b['distance']);
-                        });
-                      });
-                    })
-
-                ),
+                    icon: IconButton(
+                        icon: Icon(Icons.time_to_leave),
+                        onPressed: () {
+                          setState(() {
+                            DetailsList.sort((a, b) {
+                              return a['distance'].compareTo(b['distance']);
+                            });
+                          });
+                        })),
                 IconButton(
-                    icon:
-                    IconButton(icon: Icon(Icons.sort_by_alpha), onPressed: () {
-                      setState(() {
-                        DetailsList.sort((a, b) {
-                          return a['title'].compareTo(b['title']);
-                        });
-                      });
-                    })
-
-                ),
-
+                    icon: IconButton(
+                        icon: Icon(Icons.sort_by_alpha),
+                        onPressed: () {
+                          setState(() {
+                            DetailsList.sort((a, b) {
+                              return a['title'].compareTo(b['title']);
+                            });
+                          });
+                        })),
               ],
             ),
             SliverList(
@@ -154,32 +138,29 @@ return await Text(distance);
                   return Container(
                     decoration:
                         BoxDecoration(border: Border.all(color: Colors.grey)),
-                    height: 120.0,
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3.8,
-                              child: CachedNetworkImage(
-                                  imageUrl: '${DetailsList[index]['image']}'),
-                            ),
-                          ),
-                        ),
-                        Wrap(children: [
+                    height: MediaQuery.of(context).size.height / 4.9,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Row(
+                        children: <Widget>[
                           Container(
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-//                                    alignment: Alignment.topCenter,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Row(
+                            width: MediaQuery.of(context).size.width / 3.5,
+                            child: CachedNetworkImage(
+                                imageUrl: '${DetailsList[index]['image']}'),
+                          ),
+                          Flexible(
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 15,
+                                    child: Center(
+                                      child: Stack(
                                         children: <Widget>[
-                                          Align(
+                                          Positioned(
+                                            left: 5,
+                                            top: 5,
                                             child: Text(
                                               '${DetailsList[index]['title']}',
                                               style: TextStyle(
@@ -188,64 +169,63 @@ return await Text(distance);
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            alignment: Alignment.topLeft,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(0.0),
-                                    child: FlutterRatingBarIndicator(
-                                      rating: 2.5,
-                                      itemCount: 5,
-                                      itemSize: 15.0,
-                                      emptyColor: Colors.grey[400],
-                                    ),
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                ),
-                                Align(
-                                  child: Wrap(
-                                    children: [
-                                      Row(
-                                        children: <Widget>[
-                                          Align(
-                                            alignment: Alignment.bottomLeft,
+                                          Positioned(
+                                            right: 5,
+                                            top: 10,
                                             child: Text(
                                               'Delivery : ${DetailsList[index]['delivery']}',
                                               style: TextStyle(
-                                                  color: DetailsList[index]
-                                                      ['deliverycolor']),
+                                                color: DetailsList[index]
+                                                    ['deliverycolor'],
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Align(
-                                            child: Column(
-                                              children: <Widget>[
-
-//                                                Text('DUration: ${DetailsList[index]['duration']}'),
-
-
-
-                                              ],
-                                            ),
-                                            alignment: Alignment.bottomRight,
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 15,
+                                    child: Center(
+                                      child: FlutterRatingBarIndicator(
+                                        rating: 2.5,
+                                        itemCount: 5,
+                                        itemSize: 25.0,
+                                        emptyColor: Colors.grey[400],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 15,
+                                    child: Container(
+                                      child: FutureBuilder(
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> text) {
+                                          return new Text(
+                                            '${text.data}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),
+                                          );
+                                        },
+                                        initialData: 'loading',
+                                        future: getresponse(index),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ]),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -262,3 +242,107 @@ return await Text(distance);
   }
 }
 
+//decoration:
+//BoxDecoration(border: Border.all(color: Colors.grey)),
+//height: 120.0,
+//child: Row(
+//children: <Widget>[
+//Padding(
+//padding: const EdgeInsets.all(3.0),
+//child: Align(
+//alignment: Alignment.centerLeft,
+//child: Container(
+//width: MediaQuery.of(context).size.width / 3.8,
+//child: CachedNetworkImage(
+//imageUrl: '${DetailsList[index]['image']}'),
+//),
+//),
+//),
+//Container(
+//child: Column(
+//children: <Widget>[
+//Container(
+//
+////                                    alignment: Alignment.topCenter,
+//child: Padding(
+//padding: const EdgeInsets.all(8.0),
+//child: Container(
+//child: Row(
+//children: <Widget>[
+//Align(
+//child: Text(
+//'${DetailsList[index]['title']}',
+//style: TextStyle(
+//fontSize: 25.0,
+//color: Colors.black,
+//fontWeight: FontWeight.bold,
+//),
+//),
+//alignment: Alignment.topCenter,
+//),
+//],
+//),
+//),
+//),
+////                                width:MediaQuery.of(context).size.height/3 ,
+//),
+//Container(
+//
+//child: Align(
+//child: Padding(
+//padding: const EdgeInsets.all(0.0),
+//child: FlutterRatingBarIndicator(
+//rating: 2.5,
+//itemCount: 5,
+//itemSize: 15.0,
+//emptyColor: Colors.grey[400],
+//),
+//),
+//alignment: Alignment.center,
+//),
+////                                height :MediaQuery.of(context).size.height/4 ,
+//),
+//Container(
+//child: Align(
+//child: Row(
+//children: <Widget>[
+//Align(
+//alignment: Alignment.bottomLeft,
+//child: Text(
+//'Delivery : ${DetailsList[index]['delivery']}',
+//style: TextStyle(
+//color: DetailsList[index]
+//['deliverycolor']),
+//),
+//),
+//SizedBox(
+//width: 10,
+//),
+//Align(
+//child: Column(
+//children: <Widget>[
+//FutureBuilder(
+//
+//builder: (BuildContext context,AsyncSnapshot<String> text){
+//return new Text('${text.data}');
+//},
+//initialData: 'loading',
+//future: getresponse(index),
+//
+//),
+//],
+//),
+//alignment: Alignment.bottomRight,
+//),
+//],
+//),
+//alignment: Alignment.bottomCenter,
+//),
+////                                  height:MediaQuery.of(context).size.height/4
+//),
+//],
+//),
+//),
+//],
+//),
+//);
