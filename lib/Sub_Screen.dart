@@ -14,6 +14,7 @@ var geolocator = Geolocator();
 
 class categorie extends StatefulWidget {
   static const String id = 'categorie_Screen';
+  static  List DetailsList = [{}];
   @override
   _categorieState createState() => _categorieState();
 }
@@ -48,7 +49,7 @@ class _GetDataState extends State<GetData> {
     var distance = 'null';
     var duration = 'null';
     String url =
-        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${DetailsList[i]['latitude']},${DetailsList[i]['longitude']}&key=$API_KEY_IOS';
+        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${categorie.DetailsList[i]['latitude']},${categorie.DetailsList[i]['longitude']}&key=$API_KEY_IOS';
 
     response = await dio.get(url);
     print(url);
@@ -62,7 +63,7 @@ class _GetDataState extends State<GetData> {
 
   }
 
-static  List DetailsList = [{}];
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,8 @@ static  List DetailsList = [{}];
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          DetailsList.clear();
+
+          categorie.DetailsList.clear();
           final messages = snapshot.data.documents;
           for (var msg in messages) {
             final title = msg.data['title'].toString();
@@ -90,7 +92,7 @@ static  List DetailsList = [{}];
             delivery == true
                 ? deliverycolor = Colors.green
                 : deliverycolor = Colors.red;
-            DetailsList.add({
+            categorie.DetailsList.add({
               'title': title,
               'phone': phone,
               'image': image,
@@ -101,7 +103,7 @@ static  List DetailsList = [{}];
             });
             headers.add(title);
           }
-          DetailsList.sort((a, b) {
+          categorie.DetailsList.sort((a, b) {
             return a['title'].compareTo(b['title']);
           });
         }
@@ -116,7 +118,7 @@ static  List DetailsList = [{}];
                         icon: Icon(Icons.time_to_leave),
                         onPressed: () {
                           setState(() {
-                            DetailsList.sort((a, b) {
+                            categorie.DetailsList.sort((a, b) {
                               return a['distance'].compareTo(b['distance']);
                             });
                           });
@@ -126,7 +128,7 @@ static  List DetailsList = [{}];
                         icon: Icon(Icons.sort_by_alpha),
                         onPressed: () {
                           setState(() {
-                            DetailsList.sort((a, b) {
+                            categorie.DetailsList.sort((a, b) {
                               return a['title'].compareTo(b['title']);
                             });
                           });
@@ -139,7 +141,10 @@ static  List DetailsList = [{}];
                 (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: (){
-                      detail.image=DetailsList[index]['image'];
+                      detail.image=categorie.DetailsList[index]['image'];
+                      detail.title=categorie.DetailsList[index]['title'];
+                      detail.detaill=categorie.DetailsList[index]['detail'];
+                      detail.del=categorie.DetailsList[index]['delivery'];
                       Navigator.push(context, new MaterialPageRoute(
                           builder: (context) => DetailsScreen()));
                     },
@@ -154,7 +159,7 @@ static  List DetailsList = [{}];
                             Container(
                               width: MediaQuery.of(context).size.width / 3.5,
                               child: CachedNetworkImage(
-                                  imageUrl: '${DetailsList[index]['image']}'),
+                                  imageUrl: '${categorie.DetailsList[index]['image']}'),
                             ),
                             Flexible(
                               child: Container(
@@ -170,7 +175,7 @@ static  List DetailsList = [{}];
                                               left: 5,
                                               top: 5,
                                               child: Text(
-                                                '${DetailsList[index]['title']}',
+                                                '${categorie.DetailsList[index]['title']}',
                                                 style: TextStyle(
                                                   fontSize: 25.0,
                                                   color: Colors.black,
@@ -182,9 +187,9 @@ static  List DetailsList = [{}];
                                               right: 5,
                                               top: 10,
                                               child: Text(
-                                                'Delivery : ${DetailsList[index]['delivery']}',
+                                                'Delivery : ${categorie.DetailsList[index]['delivery']}',
                                                 style: TextStyle(
-                                                  color: DetailsList[index]
+                                                  color: categorie.DetailsList[index]
                                                       ['deliverycolor'],
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold,
@@ -239,7 +244,7 @@ static  List DetailsList = [{}];
                     ),
                   );
                 },
-                childCount: DetailsList.length,
+                childCount: categorie.DetailsList.length,
 
 
                 // Or, uncomment the following line:

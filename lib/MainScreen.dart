@@ -141,7 +141,6 @@ class StreamData extends StatelessWidget {
                     onPressed: (){
                       getCurrentPosition();
                       MainScrenn.cat=ListOfCategoires[index]['subcategories'];
-                      print(MainScrenn.cat);
                       Navigator.push(context, new MaterialPageRoute(
                           builder: (context) =>
                           new categorie())
@@ -157,6 +156,7 @@ class StreamData extends StatelessWidget {
                         children: <Widget>[
                           CachedNetworkImage(
                             imageUrl: ListOfCategoires[index]['imagelink'],
+
                             fit: BoxFit.fill,
                           ),
                           Text(
@@ -181,51 +181,4 @@ class StreamData extends StatelessWidget {
 }
 
 
-//class cards extends StatefulWidget {
-//  cards(this.categoriee, this.imageLink);
-//  final String categoriee;
-//  final String imageLink;
-//
-//  @override
-//  _cardsState createState() => _cardsState();
-//}
-//
-//class _cardsState extends State<cards> {
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialButton(
-//      child: Column(
-//        children: <Widget>[
-//          CachedNetworkImage(
-//            imageUrl: widget.imageLink,
-//            fit: BoxFit.fill,
-//          ),
-//          Text(widget.categoriee,),
-//        ],
-//      ),
-//      onPressed: (){
-//        MainScrenn.cat=categoriee;
-//        Navigator.pushNamed(context, categorie.id);
-//      },
-//
-//    );
-//  }
-//}
 
-//GridView.builder(
-//
-//
-//itemCount: ListOfCategoires.length,
-//gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//crossAxisCount: 3,
-//childAspectRatio: MediaQuery.of(context).size.width /
-//(MediaQuery.of(context).size.height / 1.4),
-//),
-//itemBuilder: (BuildContext context, int index) {
-//
-//
-//return Container(
-//child: cards(ListOfCategoires[index]['subcategories'],
-//ListOfCategoires[index]['imagelink']),
-//);
-//});
