@@ -145,6 +145,9 @@ class _GetDataState extends State<GetData> {
                       detail.title=categorie.DetailsList[index]['title'];
                       detail.detaill=categorie.DetailsList[index]['detail'];
                       detail.del=categorie.DetailsList[index]['delivery'];
+                      detail.phone=categorie.DetailsList[index]['phone'];
+                      detail.latitude=categorie.DetailsList[index]['latitude'];
+                      detail.latitude=categorie.DetailsList[index]['longitude'];
                       Navigator.push(context, new MaterialPageRoute(
                           builder: (context) => DetailsScreen()));
                     },

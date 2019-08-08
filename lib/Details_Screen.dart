@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 class DetailsScreen extends StatefulWidget {
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -18,8 +19,14 @@ class detail extends StatelessWidget {
   static var image='';
   static var title='';
   static var detaill='';
-  static var del='';
-  var deliveryy = 'yes'; var deliverycolor = Colors.grey;
+  static var del='true';
+  static var phone='';
+  static var latitude=0.0;
+  static var longitude=0.0;
+
+
+
+
 
 
   @override
@@ -36,7 +43,7 @@ class detail extends StatelessWidget {
             ),
             title:  Align(
                 alignment: Alignment.bottomCenter,
-                child: Text('$title'))
+                child: Text('$title',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 35),))
           ),
         ),
         SliverFixedExtentList(delegate: SliverChildListDelegate([
@@ -79,6 +86,7 @@ class detail extends StatelessWidget {
                 Container(
                   width:  MediaQuery.of(context).size.width / 3,
                   child: MaterialButton(onPressed: (){
+                    MapUtils.openMap(latitude,longitude);
 
                   },
                   child: Text('Locate',style: TextStyle(
@@ -96,6 +104,7 @@ class detail extends StatelessWidget {
                   color: Colors.grey[300],
                   width:  MediaQuery.of(context).size.width / 3,
                   child: MaterialButton(onPressed: (){
+                    launch('tel://$phone');
 
                   },
                     child: Text('Call',style: TextStyle(
@@ -111,16 +120,27 @@ class detail extends StatelessWidget {
         SliverFixedExtentList(delegate: SliverChildListDelegate([
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Delivery:$del.',style: TextStyle(fontSize: 15),),
+            child: Text('Delivery : $del',style: TextStyle(fontSize: 25,color: detail.del=='true'?Colors.green:Colors.red,fontWeight: FontWeight.bold)),
           ),
-        ]), itemExtent:30),
+        ]), itemExtent:50),
         SliverFixedExtentList(delegate: SliverChildListDelegate([
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Description:$detaill.',style: TextStyle(fontSize: 15),),
+            child: Text('Description:$detaill.',style: TextStyle(fontSize: 20),),
           ),
         ]), itemExtent:100),
       ],
     );
+  }
+}
+class MapUtils {
+
+  static openMap(double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
   }
 }
