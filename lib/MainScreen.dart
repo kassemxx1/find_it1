@@ -7,13 +7,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LogIn.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
-
+enum signForm{SignedIn,SignedOut }
 final _firestore = Firestore.instance;
 AnimationController animationController;
 var heightt = 400.0;
 Geolocator _geolocator=Geolocator();
 Position _position;
 class MainScrenn extends StatefulWidget {
+
 
   static var MyPoint=GeoPoint(33.322497, 35.477090);
   static var MyLatitud=33.322497;
@@ -28,7 +29,7 @@ class MainScrenn extends StatefulWidget {
 
 class _MainScrennState extends State<MainScrenn>
     with SingleTickerProviderStateMixin {
-
+signForm _signForm=signForm.SignedOut;
   void getCurrentPosition()async{
     Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
@@ -37,10 +38,59 @@ class _MainScrennState extends State<MainScrenn>
     MainScrenn.MyPoint =GeoPoint(position.latitude, position.longitude);
 
   }
+  Future<FirebaseUser> getuser() async{
+    return await _auth.currentUser();
+  }
+Future<Widget> signInForm() async{
+    return Column(
+      children: <Widget>[
+        MaterialButton(
+          child: Text('SignIn'),
+          onPressed: (){
+            Navigator.pushNamed(context, LoginScreen.id);
+
+          },
+
+        ),
+      ],
+    );
+}
+ SignOUtForm()async{
+  return Column(
+    children: <Widget>[
+      MaterialButton(
+        child: Text('SignOut'),
+        onPressed: (){
+          _auth.signOut();
+
+
+        },
+
+      ),
+    ],
+  );
+
+}
+Future<void> drawerform() async{
+    if(_signForm==signForm.SignedOut) {
+      return new Future (()=>  Navigator.pushNamed(context, MainScrenn.id));
+    }
+    if(_signForm==signForm.SignedIn){
+      return new Future (()=>  _auth.signOut());
+    }
+}
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getuser().then((user){
+      if(user !=null){
+    _signForm=signForm.SignedIn;
+    print('signedIn${user.phoneNumber}');
+      }
+    });
+
+
     getCurrentPosition();
 
 
@@ -53,22 +103,21 @@ class _MainScrennState extends State<MainScrenn>
     return MaterialApp(
       home: Scaffold(
         drawer: Drawer(
-          elevation: 20,
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                  child: null,
-                decoration: BoxDecoration(color: Colors.blue),
-              ),
-              MaterialButton(
-                child: Text('SignIn'),
-                  onPressed: (){
-                Navigator.pushNamed(context, LoginScreen.id);
-              }, 
-                  
-              ),
-            ],
-          ),
+         child: FutureBuilder(
+             builder: (BuildContext context ,AsyncSnapshot<void> text){
+               return MaterialButton(
+                 child: Text('sign'),
+                 onPressed: (){
+                   setState(() {
+                     text.data;
+                   });
+
+                 },
+               );
+
+             },
+           future: drawerform(),
+         ),
         ),
         body: StreamData(),
       ),
