@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Subcategories.dart';
 import 'MainScreen.dart';
 import 'Sub_Screen.dart';
+import 'LogIn.dart';
 void main() => runApp(Find_it());
 class Find_it extends StatefulWidget {
 
@@ -18,6 +19,7 @@ class _Find_itState extends State<Find_it> {
         MainScrenn.id : (context) => MainScrenn(),
         SubCategories.id : (context) => SubCategories(),
         categorie.id : (context) => categorie(),
+        LoginScreen.id : (context) => LoginScreen(),
 
       },
     );

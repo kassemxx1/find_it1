@@ -19,13 +19,11 @@ class detail extends StatelessWidget {
   static var image='';
   static var title='';
   static var detaill='';
-  static var del='true';
+  static var del='';
   static var phone='';
   static var latitude=0.0;
   static var longitude=0.0;
-
-
-
+  var deliveryy = 'yes'; var deliverycolor = Colors.grey;
 
 
 
@@ -43,7 +41,7 @@ class detail extends StatelessWidget {
             ),
             title:  Align(
                 alignment: Alignment.bottomCenter,
-                child: Text('$title',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 35),))
+                child: Text('$title'))
           ),
         ),
         SliverFixedExtentList(delegate: SliverChildListDelegate([
@@ -105,7 +103,6 @@ class detail extends StatelessWidget {
                   width:  MediaQuery.of(context).size.width / 3,
                   child: MaterialButton(onPressed: (){
                     launch('tel://$phone');
-
                   },
                     child: Text('Call',style: TextStyle(
                       fontSize: 20,
@@ -120,13 +117,13 @@ class detail extends StatelessWidget {
         SliverFixedExtentList(delegate: SliverChildListDelegate([
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Delivery : $del',style: TextStyle(fontSize: 25,color: detail.del=='true'?Colors.green:Colors.red,fontWeight: FontWeight.bold)),
+            child: Text('Delivery:$del.',style: TextStyle(fontSize: 15),),
           ),
-        ]), itemExtent:50),
+        ]), itemExtent:30),
         SliverFixedExtentList(delegate: SliverChildListDelegate([
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Description:$detaill.',style: TextStyle(fontSize: 20),),
+            child: Text('Description:$detaill.',style: TextStyle(fontSize: 15),),
           ),
         ]), itemExtent:100),
       ],

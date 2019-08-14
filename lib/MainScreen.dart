@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'Subcategories.dart';
 import 'Sub_Screen.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'LogIn.dart';
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 final _firestore = Firestore.instance;
 AnimationController animationController;
@@ -14,10 +16,12 @@ Position _position;
 class MainScrenn extends StatefulWidget {
 
   static var MyPoint=GeoPoint(33.322497, 35.477090);
-   static var MyLatitud=33.322497;
-   static var MyLonGitude=35.477090;
+  static var MyLatitud=33.322497;
+  static var MyLonGitude=35.477090;
   static const String id = 'Main_Screen';
   static var cat = "";
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
   @override
   _MainScrennState createState() => _MainScrennState();
 }
@@ -37,14 +41,35 @@ class _MainScrennState extends State<MainScrenn>
   void initState() {
     // TODO: implement initState
     super.initState();
-
     getCurrentPosition();
 
+
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        drawer: Drawer(
+          elevation: 20,
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                  child: null,
+                decoration: BoxDecoration(color: Colors.blue),
+              ),
+              MaterialButton(
+                child: Text('SignIn'),
+                  onPressed: (){
+                Navigator.pushNamed(context, LoginScreen.id);
+              }, 
+                  
+              ),
+            ],
+          ),
+        ),
         body: StreamData(),
       ),
     );

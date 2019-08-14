@@ -64,7 +64,6 @@ class _GetDataState extends State<GetData> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -74,7 +73,6 @@ class _GetDataState extends State<GetData> {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
           categorie.DetailsList.clear();
           final messages = snapshot.data.documents;
           for (var msg in messages) {
