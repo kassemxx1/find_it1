@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'MainScreen.dart';
+import 'root_page.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'Login_Screen';
@@ -38,9 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           verificationFailed: (AuthException exceptio) {
             print('${exceptio.message}');
-          });
+          }
+
+          );
     } catch (e) {
-      handleError(e);
+  //    handleError(e);
     }
   }
 
@@ -74,8 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   _auth.currentUser().then((user) {
                     if (user != null) {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pushReplacementNamed(MainScrenn.id);
+                      Navigator.pushNamed(context, RootPage.id);
                     } else {
                       signIn();
                     }
@@ -93,13 +95,15 @@ class _LoginScreenState extends State<LoginScreen> {
         verificationId: verificationId,
         smsCode: smsOTP,
       );
-      final FirebaseUser user = (await _auth.signInWithCredential(credential)) as FirebaseUser;
+
+      final FirebaseUser user =
+          (await _auth.signInWithCredential(credential)) as FirebaseUser;
+
       final FirebaseUser currentUser = await _auth.currentUser();
       assert(user.uid == currentUser.uid);
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacementNamed(MainScrenn.id);
+      Navigator.pushNamed(context, RootPage.id);
     } catch (e) {
-      handleError(e);
+     // handleError(e);
     }
   }
 

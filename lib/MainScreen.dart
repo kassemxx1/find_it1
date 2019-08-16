@@ -6,19 +6,23 @@ import 'Sub_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LogIn.dart';
+import 'root_page.dart';
+import 'Add_post.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
-enum signForm{SignedIn,SignedOut }
 final _firestore = Firestore.instance;
 AnimationController animationController;
 var heightt = 400.0;
-Geolocator _geolocator=Geolocator();
-Position _position;
+
 class MainScrenn extends StatefulWidget {
+  MainScrenn({this.onSignedIn});
+  final VoidCallback onSignedIn;
 
+  static var isSignedIn = false;
 
-  static var MyPoint=GeoPoint(33.322497, 35.477090);
-  static var MyLatitud=33.322497;
-  static var MyLonGitude=35.477090;
+  static var MyPoint = GeoPoint(33.322497, 35.477090);
+  static var MyLatitud = 33.322497;
+  static var MyLonGitude = 35.477090;
   static const String id = 'Main_Screen';
   static var cat = "";
   TextEditingController emailController = new TextEditingController();
@@ -29,101 +33,96 @@ class MainScrenn extends StatefulWidget {
 
 class _MainScrennState extends State<MainScrenn>
     with SingleTickerProviderStateMixin {
-signForm _signForm=signForm.SignedOut;
-  void getCurrentPosition()async{
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  void getCurrentPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-    MainScrenn.MyLatitud=position.latitude;
-    MainScrenn.MyLonGitude=position.longitude;
-    MainScrenn.MyPoint =GeoPoint(position.latitude, position.longitude);
-
+    MainScrenn.MyLatitud = position.latitude;
+    MainScrenn.MyLonGitude = position.longitude;
+    MainScrenn.MyPoint = GeoPoint(position.latitude, position.longitude);
   }
-  Future<FirebaseUser> getuser() async{
-    return await _auth.currentUser();
+
+  Widget buildSubmitButtons() {
+    if (MainScrenn.isSignedIn == false) {
+
+        return Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('Login', style: TextStyle(fontSize: 20.0)),
+              onPressed: validateAndSubmit,
+            ),
+
+
+          ],
+        );
+
+    } else {
+
+        return Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('SignOut', style: TextStyle(fontSize: 20.0)),
+              onPressed: validateAndSubmit,
+            ),
+            RaisedButton(
+              child: Text('Add Post', style: TextStyle(fontSize: 20.0)),
+              onPressed: (){
+                Navigator.pushNamed(context, AddPost.id);
+
+              },
+            ),
+          ],
+        );
+    }
   }
-Future<Widget> signInForm() async{
-    return Column(
-      children: <Widget>[
-        MaterialButton(
-          child: Text('SignIn'),
-          onPressed: (){
-            Navigator.pushNamed(context, LoginScreen.id);
 
-          },
+  Future<void> validateAndSubmit() async {
+    try {
+      if (MainScrenn.isSignedIn == false) {
+        Navigator.pushNamed(context, LoginScreen.id);
+      } else {
+        _auth.signOut();
+        setState(() {
+          MainScrenn.isSignedIn=false;
+        });
 
-        ),
-      ],
-    );
-}
- SignOUtForm()async{
-  return Column(
-    children: <Widget>[
-      MaterialButton(
-        child: Text('SignOut'),
-        onPressed: (){
-          _auth.signOut();
+      }
 
-
-        },
-
-      ),
-    ],
-  );
-
-}
-Future<void> drawerform() async{
-    if(_signForm==signForm.SignedOut) {
-      return new Future (()=>  Navigator.pushNamed(context, MainScrenn.id));
+    } catch (e) {
+      print('Error: $e');
     }
-    if(_signForm==signForm.SignedIn){
-      return new Future (()=>  _auth.signOut());
-    }
-}
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getuser().then((user){
-      if(user !=null){
-    _signForm=signForm.SignedIn;
-    print('signedIn${user.phoneNumber}');
-      }
-    });
-
-
+    buildSubmitButtons();
+    print(MainScrenn.isSignedIn);
     getCurrentPosition();
-
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         drawer: Drawer(
-         child: FutureBuilder(
-             builder: (BuildContext context ,AsyncSnapshot<void> text){
-               return MaterialButton(
-                 child: Text('sign'),
-                 onPressed: (){
-                   setState(() {
-                     text.data;
-                   });
+          child:Column(
+            children: <Widget>[
+              DrawerHeader(
+                  child: null,
+              ),
 
-                 },
-               );
-
-             },
-           future: drawerform(),
-         ),
+              buildSubmitButtons(),
+            ],
+          )
         ),
         body: StreamData(),
       ),
     );
   }
 }
+
 class StreamData extends StatelessWidget {
   List colrs = [
     Colors.cyan,
@@ -139,11 +138,13 @@ class StreamData extends StatelessWidget {
   ];
   var ListOfCategoires = [];
   void getSub() {}
-  void getCurrentPosition()async{
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    MainScrenn.MyLatitud=position.latitude;
-    MainScrenn.MyLonGitude=position.longitude;
+  void getCurrentPosition() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    MainScrenn.MyLatitud = position.latitude;
+    MainScrenn.MyLonGitude = position.longitude;
   }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -163,7 +164,7 @@ class StreamData extends StatelessWidget {
           }
           return CustomScrollView(slivers: <Widget>[
             SliverAppBar(
-              expandedHeight: MediaQuery.of(context).size.height/3,
+              expandedHeight: MediaQuery.of(context).size.height / 3,
               floating: false,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -212,35 +213,30 @@ class StreamData extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return MaterialButton(
-                    onPressed: (){
+                    onPressed: () {
                       getCurrentPosition();
-                      MainScrenn.cat=ListOfCategoires[index]['subcategories'];
-                      Navigator.push(context, new MaterialPageRoute(
-                          builder: (context) =>
-                          new categorie())
-                      );
+                      MainScrenn.cat = ListOfCategoires[index]['subcategories'];
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new categorie()));
 //                      Navigator.pushNamed(context, categorie.id);
                     },
                     child: AnimatedContainer(
-
-                      duration: Duration(seconds: 1),
-                      curve: Curves.linear,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          CachedNetworkImage(
-                            imageUrl: ListOfCategoires[index]['imagelink'],
-
-                            fit: BoxFit.fill,
-                          ),
-                          Text(
-                            ListOfCategoires[index]['subcategories'],
-                          ),
-                        ],
-                      )
-
-
-                    ),
+                        duration: Duration(seconds: 1),
+                        curve: Curves.linear,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              imageUrl: ListOfCategoires[index]['imagelink'],
+                              fit: BoxFit.fill,
+                            ),
+                            Text(
+                              ListOfCategoires[index]['subcategories'],
+                            ),
+                          ],
+                        )),
                   );
                 },
                 childCount: ListOfCategoires.length,
@@ -253,6 +249,3 @@ class StreamData extends StatelessWidget {
         });
   }
 }
-
-
-
