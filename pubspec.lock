@@ -125,6 +125,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.3"
+  flutter_places_dialog:
+    dependency: "direct main"
+    description:
+      name: flutter_places_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   flutter_rating_bar:
     dependency: "direct main"
     description:

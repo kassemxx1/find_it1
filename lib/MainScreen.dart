@@ -51,6 +51,13 @@ class _MainScrennState extends State<MainScrenn>
               child: Text('Login', style: TextStyle(fontSize: 20.0)),
               onPressed: validateAndSubmit,
             ),
+            RaisedButton(
+              child: Text('Add Post', style: TextStyle(fontSize: 20.0)),
+              onPressed: (){
+                Navigator.pushNamed(context, AddPost.id);
+
+              },
+            ),
 
 
           ],

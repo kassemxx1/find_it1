@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'locationPicker.dart';
+import 'package:flutter_places_dialog/flutter_places_dialog.dart';
 
 FirebaseStorage _storage = FirebaseStorage.instance;
 final Firestore _firestore=Firestore.instance;
@@ -101,17 +101,6 @@ print(categories);
 
             },
           ),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter The Phone Number',
-            ),
-            onChanged: (value){
-              setState(() {
-                PhoneNumber=value;
-              });
-
-            },
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -129,6 +118,17 @@ print(categories);
                 onChanged: _handeleRadio,
               ),
             ],
+          ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Enter The Phone Number',
+            ),
+            onChanged: (value){
+              setState(() {
+                PhoneNumber=value;
+              });
+
+            },
           ),
           Container(
             padding: EdgeInsets.all(16),
@@ -160,23 +160,11 @@ print(categories);
             },
             child: Text('upload'),
           ),MaterialButton(
-            onPressed: () async{
-              LocationPicker.initApiKey('AIzaSyDdJJAzEqoH0RHIX06qXgMpGy188NtxmAo');
-              LocationPicker picker = new LocationPicker();
-              try
-              {
-               var result = await picker.showLocationPicker;
-               setState(() {
-                 _locationPickerData = result.toString();
-                 print(_locationPickerData);
+            onPressed: ()async {
 
-               },);
-              }
-              catch (e)
-              {
-                //HANDLE ERROR
 
-              }
+                await FlutterPlacesDialog.getPlacesDialog();
+                FlutterPlacesDialog.setGoogleApiKey('AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE');
 
             },
             child: Text('upload'),
