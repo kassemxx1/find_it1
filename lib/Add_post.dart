@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_places_dialog/flutter_places_dialog.dart';
-
+import 'package:place_picker/place_picker.dart';
 FirebaseStorage _storage = FirebaseStorage.instance;
 final Firestore _firestore=Firestore.instance;
 class AddPost extends StatefulWidget {
@@ -56,6 +55,13 @@ var _locationPickerData;
 
    }
   }
+void showPlacePicker() async {
+  LocationResult result = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => PlacePicker("AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE")));
+
+  // Handle the result in your way
+  print(result);
+}
   Future<String> uploadPic() async {
 
     //Get the file from the image picker and store it
@@ -161,11 +167,12 @@ print(categories);
             child: Text('upload'),
           ),MaterialButton(
             onPressed: ()async {
+              LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      PlacePicker("AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE")));
 
-
-                await FlutterPlacesDialog.getPlacesDialog();
-                FlutterPlacesDialog.setGoogleApiKey('AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE');
-
+              // Handle the result in your way
+              print(result.latLng.longitude.toString());
             },
             child: Text('upload'),
           )

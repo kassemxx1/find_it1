@@ -26,7 +26,7 @@ dependencies:
   dropdown_formfield: ^0.1.0
   firebase_storage: ^3.0.3
   image_picker: ^0.6.1+3
-  flutter_places_dialog: ^1.0.5
+  place_picker: ^0.9.9
 
 
 
