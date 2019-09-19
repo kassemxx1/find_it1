@@ -102,7 +102,7 @@ class _detailState extends State<detail> {
                   FlutterRatingBarIndicator(
                     rating: detail.RateAverage,
                     itemCount: 5,
-                    itemSize: 30.0,
+                    itemSize: 20.0,
                     emptyColor: Colors.grey[400],
                   ),
                   IconButton(icon: Icon(Icons.rate_review,size: 40,),

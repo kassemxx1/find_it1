@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dio/dio.dart';
 import 'Details_Screen.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 final _firestore = Firestore.instance;
 var items = List<String>();
@@ -19,6 +20,15 @@ class categorie extends StatefulWidget {
   @override
   _categorieState createState() => _categorieState();
 }
+double calculateDistance(double lat1,double lon1,double lat2,double lon2){
+  var p = 0.017453292519943295;
+ // var c = cos;
+  var a = 0.5 - cos((lat2 - lat1) * p)/2 +
+      cos(lat1 * p) * cos(lat2 * p) *
+          (1 - cos((lon2 - lon1) * p))/2;
+  return 12742 * asin(sqrt(a));
+}
+
 
 class _categorieState extends State<categorie> {
   @override
@@ -45,21 +55,24 @@ class _GetDataState extends State<GetData> {
   Response response;
   String API_KEY_android = 'AIzaSyCcgNqHPXujEYpRy1BntzZ1wzp4eblTW-Y';
   String API_KEY_IOS = 'AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE';
-
-  Future<String> getresponse(int i) async {
-    var distance = 'null';
-    var duration = 'null';
-    String url =
-        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${categorie.DetailsList[i]['latitude']},${categorie.DetailsList[i]['longitude']}&key=$API_KEY_IOS';
-
-    response = await dio.get(url);
-    print(url);
-
-    distance = response.data['rows'][0]['elements'][0]['distance']['text'];
-    duration = response.data['rows'][0]['elements'][0]['duration']['text'];
-
-    return new Future(() => '${distance.toString()}    ${duration.toString()}');
-  }
+//
+//  Future<String> getresponse(int i)  async{
+//  //  calculateDistance(MainScrenn.MyLatitud, MainScrenn.MyLonGitude, categorie.DetailsList[i]['latitude'], categorie.DetailsList[i]['longitude']);
+//    var distance;
+//  distance =  await '${calculateDistance(MainScrenn.MyLatitud, MainScrenn.MyLonGitude, categorie.DetailsList[i]['latitude'], categorie.DetailsList[i]['longitude'])}';
+////    var duration = 'null';
+////    String url =
+////        'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${MainScrenn.MyLatitud},${MainScrenn.MyLonGitude}&destinations=${categorie.DetailsList[i]['latitude']},${categorie.DetailsList[i]['longitude']}&key=$API_KEY_IOS';
+////
+////    response = await dio.get(url);
+////    print(url);
+////
+////    distance = response.data['rows'][0]['elements'][0]['distance']['text'];
+////    duration = response.data['rows'][0]['elements'][0]['duration']['text'];
+////
+////    return new Future(() => '${distance.toString()}    ${duration.toString()}');
+//    return new Future(() => '${distance.toString()} KM');
+//  }
 
   Future<double> getrating(String thetitle) async {
     var ratelist = [
@@ -257,21 +270,26 @@ class _GetDataState extends State<GetData> {
                                           MediaQuery.of(context).size.height /
                                               15,
                                       child: Container(
-                                        child: FutureBuilder(
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<String> text) {
-                                            return new Text(
-                                              '${text.data}',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                              ),
-                                            );
-                                          },
-                                          initialData: 'loading',
-                                          future: getresponse(index),
-                                        ),
+//                                        child: FutureBuilder(
+//                                          builder: (BuildContext context,
+//                                              AsyncSnapshot<String> text) {
+//                                            return new Text(
+//                                              '${text.data}',
+//                                              style: TextStyle(
+//                                                fontWeight: FontWeight.bold,
+//                                                color: Colors.black,
+//                                                fontSize: 15,
+//                                              ),
+//                                            );
+//                                          },
+//                                          initialData: 'loading',
+//                                          future: getresponse(index),
+//                                        ),
+                                      child: Text('Distance: ${(calculateDistance(MainScrenn.MyLatitud, MainScrenn.MyLonGitude, categorie.DetailsList[index]['latitude'], categorie.DetailsList[index]['longitude'])).round().toString()} KM',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),),
                                       ),
                                     ),
                                   ],

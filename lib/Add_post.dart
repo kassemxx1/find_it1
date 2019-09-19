@@ -5,6 +5,7 @@ import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:place_picker/place_picker.dart';
+
 FirebaseStorage _storage = FirebaseStorage.instance;
 final Firestore _firestore=Firestore.instance;
 class AddPost extends StatefulWidget {
@@ -14,9 +15,7 @@ class AddPost extends StatefulWidget {
 }
 
 class _AddPostState extends State<AddPost> {
-
-
-var _locationPickerData;
+//var _locationPickerData;
 
   var radiovalue=0;
   var delivery=false;
@@ -55,13 +54,8 @@ var _locationPickerData;
 
    }
   }
-void showPlacePicker() async {
-  LocationResult result = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => PlacePicker("AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE")));
 
-  // Handle the result in your way
-  print(result);
-}
+
   Future<String> uploadPic() async {
 
     //Get the file from the image picker and store it
@@ -90,6 +84,7 @@ void showPlacePicker() async {
     super.initState();
     getcategories();
 print(categories);
+
   }
   @override
   Widget build(BuildContext context) {
@@ -165,16 +160,35 @@ print(categories);
               },);
             },
             child: Text('upload'),
-          ),MaterialButton(
+          ),
+          MaterialButton(
             onPressed: ()async {
-              LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      PlacePicker("AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE")));
 
-              // Handle the result in your way
-              print(result.latLng.longitude.toString());
-            },
+              LocationResult result= await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      PlacePicker("AIzaSyBBnhAuFuduAMQu5u30xsDzbS6Um0qVNvE"),
+              ),
+              );
+
+              print(result);
+              
+           },
             child: Text('upload'),
+          ),
+          MaterialButton(
+            onPressed: ()async{
+              await _firestore.collection('sub').add({
+                'title':title,
+                'delivery':delivery,
+                'image':ImageLink,
+                'phone':PhoneNumber,
+                'sub':categorieValue,
+
+              });
+
+              
+            },
+              child: Text('Add your Post'),
           )
 
 
