@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dio/dio.dart';
 import 'Details_Screen.dart';
+import 'Mid_screen.dart';
 import 'dart:math' show cos, sqrt, asin;
 
 final _firestore = Firestore.instance;
@@ -105,7 +106,7 @@ class _GetDataState extends State<GetData> {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('sub')
-          .where('sub', isEqualTo: MainScrenn.cat)
+          .where('sub', isEqualTo: MidScreen.cat)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

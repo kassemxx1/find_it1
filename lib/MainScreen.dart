@@ -6,9 +6,8 @@ import 'Sub_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LogIn.dart';
-import 'root_page.dart';
 import 'Add_post.dart';
-
+import 'Mid_screen.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final _firestore = Firestore.instance;
 AnimationController animationController;
@@ -226,7 +225,7 @@ class StreamData extends StatelessWidget {
                       Navigator.push(
                           context,
                           new MaterialPageRoute(
-                              builder: (context) => new categorie()));
+                              builder: (context) => new MidScreen()));
 //                      Navigator.pushNamed(context, categorie.id);
                     },
                     child: AnimatedContainer(
