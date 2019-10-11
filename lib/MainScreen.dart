@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'LogIn.dart';
 import 'Add_post.dart';
 import 'Mid_screen.dart';
+import 'NewSignIn.dart';
+import 'UserProfile.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final _firestore = Firestore.instance;
 AnimationController animationController;
@@ -32,7 +34,9 @@ class MainScrenn extends StatefulWidget {
 
 class _MainScrennState extends State<MainScrenn>
     with SingleTickerProviderStateMixin {
+  FirebaseUser user;
   void getCurrentPosition() async {
+
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
@@ -40,7 +44,10 @@ class _MainScrennState extends State<MainScrenn>
     MainScrenn.MyLonGitude = position.longitude;
     MainScrenn.MyPoint = GeoPoint(position.latitude, position.longitude);
   }
+  void AddUserInfo(){
+    user = _auth.currentUser() as FirebaseUser;
 
+  }
   Widget buildSubmitButtons() {
     if (MainScrenn.isSignedIn == false) {
 
@@ -57,6 +64,21 @@ class _MainScrennState extends State<MainScrenn>
 
               },
             ),
+            RaisedButton(
+              child: Text('SignIn New', style: TextStyle(fontSize: 20.0)),
+              onPressed: (){
+                Navigator.pushNamed(context, NewSign.id);
+
+              },
+            ),
+            RaisedButton(
+              child: Text('Profile', style: TextStyle(fontSize: 20.0)),
+              onPressed: (){
+                Navigator.pushNamed(context, UserProfile.id);
+
+              },
+            ),
+
 
 
           ],
@@ -74,6 +96,13 @@ class _MainScrennState extends State<MainScrenn>
               child: Text('Add Post', style: TextStyle(fontSize: 20.0)),
               onPressed: (){
                 Navigator.pushNamed(context, AddPost.id);
+
+              },
+            ),
+            RaisedButton(
+              child: Text('Profile', style: TextStyle(fontSize: 20.0)),
+              onPressed: (){
+                Navigator.pushNamed(context, UserProfile.id);
 
               },
             ),

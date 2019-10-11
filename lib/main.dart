@@ -6,6 +6,8 @@ import 'LogIn.dart';
 import 'root_page.dart';
 import 'Add_post.dart';
 import 'Mid_screen.dart';
+import 'NewSignIn.dart';
+import 'package:find_it/UserProfile.dart';
 void main() => runApp(Find_it());
 class Find_it extends StatefulWidget {
 
@@ -26,6 +28,9 @@ class _Find_itState extends State<Find_it> {
         LoginScreen.id : (context) => LoginScreen(),
         AddPost.id : (context) => AddPost(),
         MidScreen.id: (context) => MidScreen(),
+        NewSign.id :(context) => NewSign(),
+        UserProfile.id:(context) => UserProfile(),
+
 
 
       },

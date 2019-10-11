@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'MainScreen.dart';
 import 'root_page.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+final _firestore = Firestore.instance;
 class LoginScreen extends StatefulWidget {
   static const String id = 'Login_Screen';
   @override
@@ -16,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String verificationId;
   String errorMessage = '';
   FirebaseAuth _auth = FirebaseAuth.instance;
+
+
   Future<void> verifyPhone() async {
     final PhoneCodeSent smsOTPSent = (String verId, [int forceCodeResend]) {
       this.verificationId = verId;
@@ -36,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) {
             print(phoneAuthCredential);
+
           },
           verificationFailed: (AuthException exceptio) {
             print('${exceptio.message}');
@@ -78,8 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   _auth.currentUser().then((user) {
                     if (user != null) {
                       Navigator.pushNamed(context, RootPage.id);
+
+
+
                     } else {
                       signIn();
+
                     }
                   });
                 },
@@ -101,6 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final FirebaseUser currentUser = await _auth.currentUser();
       assert(user.uid == currentUser.uid);
+
+
       Navigator.pushNamed(context, RootPage.id);
     } catch (e) {
      // handleError(e);
